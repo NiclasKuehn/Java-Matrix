@@ -5,28 +5,29 @@ import javax.swing.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.WildcardType;
 
 public class MainFrame extends JFrame {
     JPanel pMatrixinput;
+    JPanel pMatrixoutput;
     private int pMatrixinpotwidth = 200;
     private int pMatrixinpotheight = 200;
     private int pMatrixinpotoffwidth = 50;
     private int pMatrixinpotoffheight = 50;
     private JTextField labelM[][];
+    private JTextField tfSkalar;
+    private JLabel LLösungZiffer;
     private int rows = 3;
     private int columns = 3;
-    private int matrixcount=0;
-    private int MaxMatritzen=10;
+    private int matrixcount = 0;
+    private int MaxMatritzen = 10;
     private Matrix[] Master = new Matrix[MaxMatritzen];
-    private  JTextField LabelMatrixName = new JTextField();
-    JComboBox<String> CBstoredMatrix1 =new JComboBox<>();
-    JComboBox<String> CBstoredMatrix2 =new JComboBox<>();
-    JComboBox<String> cBOperator =new JComboBox<>();
-
+    private JTextField LabelMatrixName = new JTextField();
+    JComboBox<String> CBstoredMatrix1 = new JComboBox<>();
+    JComboBox<String> CBstoredMatrix2 = new JComboBox<>();
+    JComboBox<String> cBOperator = new JComboBox<>();
 
     public MainFrame() {
-        
+
         // Init JFrame
         setLayout(null);
         setTitle("Matritzen");
@@ -41,6 +42,13 @@ public class MainFrame extends JFrame {
         pMatrixinput.setBounds(pMatrixinpotoffwidth, pMatrixinpotoffheight, pMatrixinpotwidth, pMatrixinpotheight);
         add(pMatrixinput);
 
+        pMatrixoutput = new JPanel();
+        pMatrixoutput.setLayout(null);
+        pMatrixoutput.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        pMatrixoutput.setBounds(pMatrixinpotoffwidth + 650, pMatrixinpotoffheight, pMatrixinpotwidth,
+                pMatrixinpotheight);
+        add(pMatrixoutput);
+
         // init Buttons
         incColumns();
         incRows();
@@ -52,12 +60,50 @@ public class MainFrame extends JFrame {
         OperationButton();
 
         Menuee();
+        TFScalarinit();
         OperationBox();
+        LLösungZifferinit();
 
         // Ende
         pack();
         setSize(1000, 600);
         setVisible(true);
+
+    }
+
+    public void showMatrixFrame(Matrix shownMatrix) {
+        JFrame Name = new JFrame();
+        Name.setLayout(null);
+        Name.setTitle(shownMatrix.getLabel());
+        // Name.setDefaultCloseOperation(Name.EXIT_ON_CLOSE);
+        Name.setSize(300, 320);
+        Name.setVisible(true);
+        int tfwidth = (Name.getWidth() / shownMatrix.columns()) - 5;
+        int tfheight = (Name.getHeight() / shownMatrix.rows()) - 12;
+        JLabel Labelresults[][] = new JLabel[shownMatrix.rows()][shownMatrix.columns()];
+        for (int i = 0; i < shownMatrix.rows(); i++) {
+            for (int j = 0; j < shownMatrix.columns(); j++) {
+                Labelresults[i][j] = new JLabel();
+                Labelresults[i][j].setLayout(null);
+                Labelresults[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
+                Labelresults[i][j].setBounds(tfwidth * j + 1, tfheight * i + 1, tfwidth, tfheight);
+                Labelresults[i][j].setText(Double.toString(shownMatrix.getValue(i, j)));
+                Labelresults[i][j].setVisible(true);
+                Labelresults[i][j].setHorizontalAlignment(JTextField.CENTER);
+                Name.add(Labelresults[i][j]);
+
+            }
+
+        }
+
+    }
+
+    public void ErrorMessage(String Message) {
+        JDialog Error = new JDialog();
+        Error.setTitle(Message);
+        Error.setSize(400, 50);
+        Error.setModal(true);
+        Error.setVisible(true);
 
     }
 
@@ -89,13 +135,14 @@ public class MainFrame extends JFrame {
                         }
                     }
                     storeMatrix(Input);
-                    Input.print();        
-                    
-        
+                    showMatrixFrame(Input);
+                    Input.print();
+
                 }
             });
         }
     }
+
     public void ClearButton() {
         {
             JButton B_Save = new JButton();
@@ -106,7 +153,7 @@ public class MainFrame extends JFrame {
             B_Save.setVisible(true);
             B_Save.setLayout(null);
             B_Save.setBorder(BorderFactory.createLineBorder(Color.black));
-            B_Save.setBounds(pMatrixinpotwidth + pMatrixinpotoffwidth - Width ,
+            B_Save.setBounds(pMatrixinpotwidth + pMatrixinpotoffwidth - Width,
                     pMatrixinpotheight + pMatrixinpotoffheight + 50,
                     Width, Height);
             add(B_Save);
@@ -114,32 +161,63 @@ public class MainFrame extends JFrame {
                 @Override
 
                 public void actionPerformed(ActionEvent e) {
-                    ClearPanel();                  
-                  
+                    ClearPanel();
+
                 }
             });
         }
     }
-    public void Menuee(){
-        
-        for (int i = 0; i < matrixcount; i++) 
-        {
+
+    public void TFScalarinit() {
+        tfSkalar = new JTextField();
+        tfSkalar.setLayout(null);
+        tfSkalar.setBounds(pMatrixinpotoffwidth + pMatrixinpotwidth + 100,
+                pMatrixinpotoffheight + pMatrixinpotheight / 2 - 20, 30, 30);
+        tfSkalar.setHorizontalAlignment(JTextField.CENTER);
+        tfSkalar.setBorder(BorderFactory.createLineBorder(Color.black));
+        tfSkalar.setVisible(true);
+        tfSkalar.setText("0");
+        this.add(tfSkalar);
+    }
+
+    public void LLösungZifferinit() {
+        LLösungZiffer = new JLabel();
+        LLösungZiffer.setLayout(null);
+        LLösungZiffer.setBounds(pMatrixinpotoffwidth + pMatrixinpotwidth + 450,
+                pMatrixinpotoffheight + pMatrixinpotheight + 10, 200, 100);
+        LLösungZiffer.setHorizontalAlignment(JTextField.CENTER);
+        // LLösungZiffer.setBorder(BorderFactory.createLineBorder(Color.black));
+        LLösungZiffer.setVisible(true);
+        LLösungZiffer.setText("");
+        this.add(LLösungZiffer);
+    }
+
+    public void SetLösung(String LösM) {
+        LLösungZiffer.setText(LösM);
+    }
+
+    public void Menuee() {
+        CBstoredMatrix1.addItem("Skalar");
+
+        for (int i = 0; i < matrixcount; i++) {
             CBstoredMatrix1.addItem(Master[i].getLabel());
-            CBstoredMatrix2.addItem(Master[i].getLabel()); 
+            CBstoredMatrix2.addItem(Master[i].getLabel());
         }
-        CBstoredMatrix1.setBounds(pMatrixinpotoffwidth+pMatrixinpotwidth+100,pMatrixinpotoffheight , 100, 30);
-        CBstoredMatrix2.setBounds(pMatrixinpotoffwidth+pMatrixinpotwidth+240,pMatrixinpotoffheight , 100, 30);
+        CBstoredMatrix1.setBounds(pMatrixinpotoffwidth + pMatrixinpotwidth + 100, pMatrixinpotoffheight, 100, 30);
+        CBstoredMatrix2.setBounds(pMatrixinpotoffwidth + pMatrixinpotwidth + 240, pMatrixinpotoffheight, 100, 30);
         this.add(CBstoredMatrix1);
         this.add(CBstoredMatrix2);
     }
-    public void OperationBox(){
-        cBOperator.setBounds(pMatrixinpotoffwidth+pMatrixinpotwidth+200, pMatrixinpotoffheight+50, 60, 30);
+
+    public void OperationBox() {
+        cBOperator.setBounds(pMatrixinpotoffwidth + pMatrixinpotwidth + 200, pMatrixinpotoffheight + 50, 60, 30);
         cBOperator.addItem("*");
         cBOperator.addItem("+");
         cBOperator.addItem("-");
-        cBOperator.addItem("dec");
+        cBOperator.addItem("det");
         this.add(cBOperator);
     }
+
     public void OperationButton() {// unvolständig
         // SAVE buttons
         {
@@ -151,7 +229,8 @@ public class MainFrame extends JFrame {
             B_Operate.setVisible(true);
             B_Operate.setLayout(null);
             B_Operate.setBorder(BorderFactory.createLineBorder(Color.black));
-            B_Operate.setBounds(pMatrixinpotwidth+pMatrixinpotoffwidth+200,(pMatrixinpotheight+pMatrixinpotoffheight)/2,Width, Height);
+            B_Operate.setBounds(pMatrixinpotwidth + pMatrixinpotoffwidth + 200,
+                    (pMatrixinpotheight + pMatrixinpotoffheight) / 2, Width, Height);
             add(B_Operate);
             B_Operate.addActionListener(new ActionListener() {
                 @Override
@@ -159,50 +238,105 @@ public class MainFrame extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     switch (String.valueOf(cBOperator.getSelectedItem())) {
                         case "*":
-                            for (int i = 0; i < matrixcount; i++) {
-                                if(Master[i].getLabel()==CBstoredMatrix1.getSelectedItem()){
-                                    
+                            if (CBstoredMatrix1.getSelectedItem() == "Skalar") {
+                                for (int j = 0; j < matrixcount; j++) {
+                                    if (Master[j].getLabel() == CBstoredMatrix2.getSelectedItem()) {
+                                        setMatrixResult(Master[j].mul(Integer.valueOf(tfSkalar.getText())));
+                                    }
+                                }
+                            } else {
+                                for (int i = 0; i < matrixcount; i++) {
+
+                                    if (Master[i].getLabel() == CBstoredMatrix1.getSelectedItem()) {
+                                        for (int j = 0; j < matrixcount; j++) {
+                                            if (Master[j].getLabel() == CBstoredMatrix2.getSelectedItem()) {
+                                                if (Master[i].columns() == Master[j].rows()) {
+                                                    setMatrixResult(Master[i].mul(Master[j]));
+                                                } else
+                                                    ErrorMessage("Matritzen haben nicht die Passende Größe");
+                                            }
+                                        }
+                                    }
                                 }
                             }
+
                             break;
                         case "+":
+                            if (CBstoredMatrix1.getSelectedItem() == "Skalar") {
+                                ErrorMessage("Matrix kann nicht mit einem Skalar addiert werden");
+                            } else {
+                                for (int i = 0; i < matrixcount; i++) {
+                                    if (Master[i].getLabel() == CBstoredMatrix1.getSelectedItem()) {
+                                        for (int j = 0; j < matrixcount; j++) {
+                                            if (Master[j].getLabel() == CBstoredMatrix2.getSelectedItem()) {
+                                                if (Master[i].columns() == Master[j].columns()
+                                                        && Master[i].rows() == Master[j].rows()) {
+                                                    setMatrixResult(Master[i].add(Master[j]));
+                                                } else
+                                                    ErrorMessage("Matritzen haben nicht die Passende Größe");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
                             break;
                         case "-":
+                            for (int i = 0; i < matrixcount; i++) {
+                                if (Master[i].getLabel() == CBstoredMatrix1.getSelectedItem()) {
+                                    for (int j = 0; j < matrixcount; j++) {
+                                        if (Master[j].getLabel() == CBstoredMatrix2.getSelectedItem()) {
+                                            if (Master[i].columns() == Master[j].columns()
+                                                    && Master[i].rows() == Master[j].rows()) {
+                                                setMatrixResult(Master[i].add(Master[j].neg()));
+                                            } else
+                                                ErrorMessage("Matritzen haben nicht die Passende Größe");
+                                        }
+                                    }
+                                }
+                            }
                             break;
-                        case "dec":
+                        case "det":
+                            for (int i = 0; i < matrixcount; i++) {
+                                if (Master[i].getLabel() == CBstoredMatrix1.getSelectedItem()) {
+                                    SetLösung("Determinante von " + Master[i].getLabel() + " = "
+                                            + Double.toString(Master[i].det()));
+                                }
+                            }
                             break;
 
                         default:
                             break;
                     }
 
-                    
                 }
             });
         }
     }
-    public void tfMatrixLabel(){
+
+    public void tfMatrixLabel() {
         int tfwidth = 100;
         int tfheight = 20;
-       
-                LabelMatrixName.setSize(tfwidth, tfheight);
-                LabelMatrixName.setLayout(null);
-                LabelMatrixName.setBorder(BorderFactory.createLineBorder(Color.black));
-                LabelMatrixName.setBounds(pMatrixinpotoffwidth,pMatrixinpotoffheight-tfheight, tfwidth, tfheight);
-                LabelMatrixName.setText("Name");
-                LabelMatrixName.setVisible(true);
-                this.add(LabelMatrixName);
+
+        LabelMatrixName.setSize(tfwidth, tfheight);
+        LabelMatrixName.setLayout(null);
+        LabelMatrixName.setBorder(BorderFactory.createLineBorder(Color.black));
+        LabelMatrixName.setBounds(pMatrixinpotoffwidth, pMatrixinpotoffheight - tfheight, tfwidth, tfheight);
+        LabelMatrixName.setText("Name");
+        LabelMatrixName.setVisible(true);
+        this.add(LabelMatrixName);
 
     }
-    public void storeMatrix(Matrix toSave){
-        
-        Master[this.matrixcount]=toSave;
+
+    public void storeMatrix(Matrix toSave) {
+
+        Master[this.matrixcount] = toSave;
         CBstoredMatrix1.addItem(Master[matrixcount].getLabel());
-        CBstoredMatrix2.addItem(Master[matrixcount].getLabel()); 
+        CBstoredMatrix2.addItem(Master[matrixcount].getLabel());
         this.matrixcount++;
 
     }
+
     public void incColumns() {
         // vergrößerungs column buttons
         {
@@ -242,7 +376,7 @@ public class MainFrame extends JFrame {
             B_remove_column.setLayout(null);
             B_remove_column.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             B_remove_column.setBounds(pMatrixinpotwidth + pMatrixinpotoffwidth,
-                    pMatrixinpotheight / 2 + pMatrixinpotoffheight - AddColumnHeight-10,
+                    pMatrixinpotheight / 2 + pMatrixinpotoffheight - AddColumnHeight - 10,
                     AddColumnWidth, AddColumnHeight);
             add(B_remove_column);
             B_remove_column.addActionListener(new ActionListener() {
@@ -270,7 +404,7 @@ public class MainFrame extends JFrame {
             B_add_row.setVisible(true);
             B_add_row.setLayout(null);
             B_add_row.setBorder(BorderFactory.createLineBorder(Color.black));
-            B_add_row.setBounds(pMatrixinpotwidth/2 + pMatrixinpotoffwidth+10,
+            B_add_row.setBounds(pMatrixinpotwidth / 2 + pMatrixinpotoffwidth + 10,
                     pMatrixinpotheight + pMatrixinpotoffheight,
                     AddRowWidth, AddRowHeight);
             add(B_add_row);
@@ -295,7 +429,7 @@ public class MainFrame extends JFrame {
             B_remove_row.setVisible(true);
             B_remove_row.setLayout(null);
             B_remove_row.setBorder(BorderFactory.createLineBorder(Color.black));
-            B_remove_row.setBounds(pMatrixinpotwidth / 2 + pMatrixinpotoffwidth - AddRowWidth-10,
+            B_remove_row.setBounds(pMatrixinpotwidth / 2 + pMatrixinpotoffwidth - AddRowWidth - 10,
                     pMatrixinpotheight + pMatrixinpotoffheight,
                     AddRowWidth, AddRowHeight);
             add(B_remove_row);
@@ -328,19 +462,48 @@ public class MainFrame extends JFrame {
                 labelM[i][j].setBounds(tfwidth * j, tfheight * i, tfwidth, tfheight);
                 labelM[i][j].setText("0");
                 labelM[i][j].setVisible(true);
+                labelM[i][j].setHorizontalAlignment(JTextField.CENTER);
+                labelM[i][j].selectAll();
                 pMatrixinput.add(labelM[i][j]);
 
             }
-
         }
+
         pMatrixinput.setVisible(false);
         pMatrixinput.setVisible(true);
 
     }
-    public void ClearPanel(){
+
+    public void setMatrixResult(Matrix Result) {
+        // Textfelder
+        pMatrixoutput.removeAll();
+        int tfwidth = pMatrixoutput.getWidth() / Result.columns();
+        int tfheight = pMatrixoutput.getHeight() / Result.rows();
+        JLabel Labelresults[][] = new JLabel[Result.rows()][Result.columns()];
+        for (int i = 0; i < Result.rows(); i++) {
+            for (int j = 0; j < Result.columns(); j++) {
+                Labelresults[i][j] = new JLabel();
+                Labelresults[i][j].setLayout(null);
+                Labelresults[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
+                Labelresults[i][j].setBounds(tfwidth * j + 1, tfheight * i + 1, tfwidth, tfheight);
+                Labelresults[i][j].setText(Double.toString(Result.getValue(i, j)));
+                Labelresults[i][j].setVisible(true);
+                Labelresults[i][j].setHorizontalAlignment(JTextField.CENTER);
+                pMatrixoutput.add(Labelresults[i][j]);
+
+            }
+
+        }
+        pMatrixoutput.setVisible(false);
+        pMatrixoutput.setVisible(true);
+
+    }
+
+    public void ClearPanel() {
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.columns; j++) {
                 labelM[i][j].setText("0");
+                labelM[i][j].selectAll();
             }
         }
         LabelMatrixName.setText("Name");

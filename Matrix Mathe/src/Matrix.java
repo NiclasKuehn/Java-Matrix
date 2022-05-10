@@ -171,9 +171,23 @@ public class Matrix {
 
             }
             return Result;
-        } else
+        } else {
             throw new IllegalArgumentException("Matritzen können nicht miteinander Multipliziert werden: "
                     + this.getLabel() + " * " + mulvalue.getLabel());
+
+        }
+
+    }
+
+    public Matrix neg() {
+        Matrix Result = this;
+        Result.setLabel(Result.label + "  negiert");
+        for (int i = 0; i < this.rows(); i++) {
+            for (int j = 0; j < this.columns(); j++) {
+                Result.setValue(i, j, this.getValue(i, j) * -1);
+            }
+        }
+        return Result;
 
     }
 
