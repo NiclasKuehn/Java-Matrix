@@ -215,6 +215,7 @@ public class MainFrame extends JFrame {
         cBOperator.addItem("+");
         cBOperator.addItem("-");
         cBOperator.addItem("det");
+        cBOperator.addItem("inv");
         this.add(cBOperator);
     }
 
@@ -301,6 +302,18 @@ public class MainFrame extends JFrame {
                                 if (Master[i].getLabel() == CBstoredMatrix1.getSelectedItem()) {
                                     SetLösung("Determinante von " + Master[i].getLabel() + " = "
                                             + Double.toString(Master[i].det()));
+                                }
+                            }
+                            break;
+
+                            case "inv":
+                            for (int i = 0; i < matrixcount; i++) {
+                                if (Master[i].getLabel() == CBstoredMatrix1.getSelectedItem()) {
+                                    if (Master[i].det()==0){ErrorMessage("Matrix hat nicht determinante 0 --> kein Inverses Vorhanden");}
+                                    else{
+                                      setMatrixResult(Master[i].invertSetup());  
+                                    }
+                                    
                                 }
                             }
                             break;
